@@ -1,0 +1,80 @@
+<html>
+<head>
+</head>
+<script language="JavaScript" SRC="DD_DMS_Tools.js"></script>
+<script language="JavaScript">
+//==================================================
+var dTools = DD_DMS_Tools ;
+
+function bodyOnload(){
+	document.getElementById("setPrecision").checked = dTools.SET_PRECISION ;
+	document.getElementById("secondsPrec").value = dTools.SECOND_PRECISION.toString() ;
+}
+
+function clearValues(){
+	dTools.SECOND_PRECISION = parseInt(document.getElementById("secondsPrec").value) ;
+	dTools.SET_PRECISION = document.getElementById("setPrecision").checked ;
+	dTools.DMS_CONTROL = document.getElementById("dms_prec").checked ;
+	//.. reset values since if new inputs are entered, the results
+	//   would not correctly be shown until the calculation buttons are pressed.
+	document.getElementById("degreesIn").value = "0" ;
+	document.getElementById("minutesIn").value = "0" ;
+	document.getElementById("secondsIn").value = "0" ;
+	document.getElementById("decDegreesIn").value = "0.0" ; 
+}
+
+function processDOM_DDstring(){
+	var DDstring = document.getElementById("decDegreesIn").value ;
+	// input validation required here
+	// ......
+	var result = dTools.DDtoDMSstrings( DDstring ) ;
+	// ......
+	document.getElementById("degreesIn").value = result.d ;
+	document.getElementById("minutesIn").value = result.m ;
+	document.getElementById("secondsIn").value = result.s ;	
+	//.. adjust input display to values used for calculation
+	document.getElementById("decDegreesIn").value = result.DD ;
+}
+
+function process_dmsStrings(){
+	var x = parseFloat(document.getElementById("degreesIn").value) ;
+	var y = parseFloat(document.getElementById("minutesIn").value) ;
+	var z = parseFloat(document.getElementById("secondsIn").value) ;
+	// input validation required here
+	// ......
+	var result = dTools.DMStoDDstrings( [x, y, z ] ) ;
+	// ......
+	document.getElementById("decDegreesIn").value = result.DD ;
+	//.. adjust input displays to values used for calculation
+	document.getElementById("degreesIn").value = result.d ;
+	document.getElementById("minutesIn").value = result.m ;
+	document.getElementById("secondsIn").value = result.s ;	
+}
+</script>
+
+<body onload="bodyOnload()">
+<b>1.6</b><br/><br/>
+<br/><br/>
+<table style="border: 2px solid black; background-color:#FFFFE0;"><tr><td>
+
+<input type="checkbox" id="setPrecision" onchange="clearValues()" checked/> Set precision for float seconds.
+<input type="text" id="secondsPrec" value="4" size="1"  maxlength="1" onchange="clearValues()"/><br/>
+<input type="radio" name="decimalPrecision" id="DD_prec" onchange="clearValues()"> DD control <i>(decPr = 3)</i><br/>
+<input type="radio" name="decimalPrecision" id="dms_prec" onchange="clearValues()" checked> dms control <i>(decPr = 4)</i><br/>
+</br>
+<table>
+	<tr>
+		<td>degress: <input type="text" id="degreesIn" value="0" size="3"  maxlength="3"/></td>
+		<td>minnutes: <input type="text" id="minutesIn" value="0" size="3"  maxlength="2"/></td>
+		<td>seconds: <input type="text" id="secondsIn" value="0" size="6"  maxlength="7"/></td>
+		<td><input type="button" value="    to DD   " onclick="process_dmsStrings()"/></td>
+	</tr>
+	<tr>
+		<td colspan="3">DEGREES: <input type="text" id="decDegreesIn" value="0.0" /></td>
+		<td><input type="button" value="   to dms   " onclick="processDOM_DDstring()"/></td>
+	</tr>
+</table>
+</td></tr></table>
+<br/>* NOTE: input is not validated.
+</body>
+</html>
